@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kirin Feng · Cybersecurity Portfolio</title>
+<meta name="description" content="Kirin Feng — cybersecurity graduate (M.S., NYIT) focused on application security, penetration testing, threat modeling, intrusion detection and digital forensics.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07080d;
+    --bg-2: #0d0f17;
+    --card: rgba(255,255,255,0.035);
+    --border: rgba(255,255,255,0.08);
+    --text: #e8eaf2;
+    --muted: #8b90a5;
+    --accent: #7c5cff;
+    --accent-2: #00d4ff;
+    --green: #2ee59d;
+    --grad: linear-gradient(120deg, var(--accent), var(--accent-2));
+    --radius: 16px;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: "Inter", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  /* Background grid + glow */
+  .bg-fx { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+  .bg-fx::before {
+    content: ""; position: absolute; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at 50% 0%, #000 30%, transparent 75%);
+  }
+  .blob { position: absolute; border-radius: 50%; filter: blur(110px); opacity: .45; animation: float 18s ease-in-out infinite; }
+  .blob.a { width: 520px; height: 520px; background: var(--accent); top: -160px; left: -120px; }
+  .blob.b { width: 440px; height: 440px; background: var(--accent-2); top: 20%; right: -160px; animation-delay: -6s; opacity: .3; }
+  @keyframes float { 50% { transform: translate(40px, 60px) scale(1.08); } }
+
+  .container { width: min(1120px, 100% - 32px); margin-inline: auto; }
+
+  /* Nav */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+    backdrop-filter: blur(14px); background: rgba(7,8,13,0.6);
+    border-bottom: 1px solid var(--border);
+  }
+  nav .container { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  .logo { font-family: var(--mono); font-weight: 500; }
+  .logo span { color: var(--accent-2); }
+  .nav-links { display: flex; gap: 28px; font-size: 14px; color: var(--muted); }
+  .nav-links a:hover { color: var(--text); }
+  .menu-btn { display: none; background: none; border: 0; color: var(--text); font-size: 22px; cursor: pointer; }
+
+  /* Hero */
+  .hero { min-height: 100vh; display: flex; align-items: center; padding-top: 64px; }
+  .tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--mono); font-size: 13px; color: var(--muted);
+    border: 1px solid var(--border); border-radius: 999px; padding: 6px 14px; background: var(--card);
+  }
+  .tag i { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green); }
+  .hero h1 { font-size: clamp(40px, 7vw, 84px); line-height: 1.05; font-weight: 800; letter-spacing: -0.03em; margin: 24px 0; }
+  .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .typed { font-family: var(--mono); font-size: clamp(16px, 2.2vw, 22px); color: var(--muted); min-height: 1.6em; }
+  .typed::before { content: "$ "; color: var(--green); }
+  .typed::after { content: "▍"; color: var(--accent-2); animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .hero-meta { margin-top: 18px; color: var(--muted); font-size: 15px; }
+  .hero-cta { display: flex; gap: 14px; margin-top: 36px; flex-wrap: wrap; }
+  .hero-grid { display: grid; grid-template-columns: 1.5fr 1fr; gap: 48px; align-items: center; }
+  .portrait {
+    position: relative; justify-self: end; width: min(340px, 100%); aspect-ratio: 1;
+    padding: 3px; border-radius: 32px; background: var(--grad);
+    box-shadow: 0 0 90px rgba(124,92,255,.35);
+  }
+  .portrait img { width: 100%; height: 100%; object-fit: cover; border-radius: 29px; display: block; background: var(--bg-2); }
+  .portrait figcaption {
+    position: absolute; left: 20px; bottom: -16px;
+    font-family: var(--mono); font-size: 12px; color: var(--green);
+    background: rgba(7,8,13,.9); border: 1px solid var(--border); border-radius: 8px; padding: 6px 12px;
+  }
+  .btn {
+    padding: 13px 26px; border-radius: 12px; font-weight: 600; font-size: 15px;
+    border: 1px solid var(--border); transition: transform .2s, box-shadow .2s, background .2s;
+  }
+  .btn.primary { background: var(--grad); border: 0; color: #fff; box-shadow: 0 8px 30px rgba(124,92,255,.35); }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.ghost:hover { background: var(--card); }
+
+  /* Sections */
+  section { padding: 110px 0; }
+  .sec-head { margin-bottom: 52px; }
+  .sec-head .num { font-family: var(--mono); color: var(--accent-2); font-size: 14px; }
+  .sec-head h2 { font-size: clamp(30px, 4vw, 44px); letter-spacing: -0.02em; margin-top: 6px; }
+  .sec-head p { color: var(--muted); margin-top: 10px; max-width: 640px; }
+
+  /* About */
+  .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: start; }
+  .about-grid p { color: var(--muted); margin-bottom: 16px; font-size: 17px; }
+  .about-grid p strong { color: var(--text); font-weight: 600; }
+  .facts { border-top: 1px solid var(--border); margin-top: 8px; }
+  .facts div { display: grid; grid-template-columns: 110px 1fr; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 15px; }
+  .facts dt { font-family: var(--mono); font-size: 13px; color: var(--muted); padding-top: 1px; }
+  .facts dd { color: var(--text); }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+  .stat b { font-size: 36px; display: block; }
+  .stat span { color: var(--muted); font-size: 14px; }
+
+  /* Skills */
+  .skills { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .skill-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px;
+    transition: border-color .3s, transform .3s;
+  }
+  .skill-card:hover { border-color: rgba(124,92,255,.5); transform: translateY(-4px); }
+  .skill-card .icon { font-size: 26px; margin-bottom: 14px; }
+  .skill-card h3 { font-size: 18px; margin-bottom: 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip { font-family: var(--mono); font-size: 12px; padding: 5px 10px; border-radius: 8px; background: rgba(255,255,255,.05); color: var(--muted); }
+
+  /* Projects */
+  .filters { display: flex; gap: 10px; margin-bottom: 32px; flex-wrap: wrap; }
+  .filter {
+    font: inherit; font-size: 14px; color: var(--muted); background: var(--card);
+    border: 1px solid var(--border); border-radius: 999px; padding: 7px 16px; cursor: pointer;
+  }
+  .filter.active { color: #fff; background: var(--grad); border-color: transparent; }
+  .projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
+  .project {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; transition: transform .3s, border-color .3s; display: flex; flex-direction: column;
+  }
+  .project:hover { transform: translateY(-6px); border-color: rgba(0,212,255,.4); }
+  .project.hide { display: none; }
+  .banner {
+    position: relative; padding: 26px 24px; min-height: 128px; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: flex-end;
+  }
+  .banner::after {
+    content: ""; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px);
+    background-size: 22px 22px; mask-image: linear-gradient(120deg, transparent 30%, #000);
+  }
+  .banner .cat { font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,.75); position: relative; z-index: 1; }
+  .banner .metric { font-family: var(--mono); font-size: 20px; font-weight: 500; color: #fff; position: relative; z-index: 1; margin-top: 4px; }
+  .project-body { padding: 24px; display: flex; flex-direction: column; flex: 1; }
+  .project-body .ctx { font-family: var(--mono); font-size: 12px; color: var(--accent-2); margin-bottom: 6px; }
+  .project-body h3 { font-size: 19px; line-height: 1.35; margin-bottom: 10px; }
+  .project-body p { color: var(--muted); font-size: 15px; margin-bottom: 18px; flex: 1; }
+
+  .more-head { margin: 72px 0 24px; font-size: 22px; }
+  .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .mini {
+    border: 1px solid var(--border); border-radius: 12px; padding: 18px 20px; background: var(--card);
+    transition: border-color .3s;
+  }
+  .mini:hover { border-color: rgba(124,92,255,.5); }
+  .mini h4 { font-size: 15px; margin-bottom: 6px; }
+  .mini p { color: var(--muted); font-size: 13.5px; }
+  .mini .stack { font-family: var(--mono); font-size: 11.5px; color: var(--accent-2); margin-top: 10px; }
+
+  /* Timeline */
+  .timeline-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; }
+  .timeline-wrap h3.col { font-size: 15px; font-family: var(--mono); color: var(--muted); margin-bottom: 24px; font-weight: 500; }
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ""; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 2px; background: linear-gradient(var(--accent), var(--accent-2), transparent); }
+  .tl-item { position: relative; margin-bottom: 36px; }
+  .tl-item::before {
+    content: ""; position: absolute; left: -28px; top: 6px; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--bg); border: 2px solid var(--accent-2);
+  }
+  .tl-item .time { font-family: var(--mono); font-size: 13px; color: var(--accent-2); }
+  .tl-item h4 { font-size: 18px; margin: 4px 0 2px; }
+  .tl-item .org { color: var(--text); opacity: .75; font-size: 14px; margin-bottom: 6px; }
+  .tl-item p { color: var(--muted); font-size: 15px; }
+  .cert {
+    display: flex; gap: 14px; align-items: center; margin-top: 8px;
+    border: 1px solid var(--border); background: var(--card); border-radius: 12px; padding: 16px 18px;
+  }
+  .cert .badge { font-family: var(--mono); font-size: 13px; font-weight: 500; padding: 8px 10px; border-radius: 8px; background: var(--grad); color: #fff; }
+  .cert span { color: var(--muted); font-size: 14px; }
+  .cert + .cert { margin-top: 12px; }
+  .focus {
+    margin-top: 48px; display: grid; grid-template-columns: 180px 1fr; gap: 24px; align-items: center;
+    border: 1px solid rgba(124,92,255,.35); border-radius: var(--radius); padding: 28px 32px;
+    background: linear-gradient(120deg, rgba(124,92,255,.14), rgba(0,212,255,.06));
+  }
+  .focus-label { font-family: var(--mono); font-size: 14px; color: var(--accent-2); }
+  .focus p { font-size: 18px; color: var(--muted); }
+  .focus strong { color: var(--text); font-weight: 600; }
+
+  /* Contact */
+  .contact-box {
+    text-align: center; border: 1px solid var(--border); border-radius: 24px; padding: 72px 24px;
+    background: radial-gradient(ellipse at top, rgba(124,92,255,.18), transparent 70%), var(--bg-2);
+  }
+  .contact-box h2 { font-size: clamp(30px, 5vw, 52px); letter-spacing: -0.02em; margin-bottom: 14px; }
+  .contact-box p { color: var(--muted); max-width: 560px; margin: 0 auto 32px; }
+  .socials { display: flex; justify-content: center; gap: 22px; margin-top: 32px; font-family: var(--mono); font-size: 14px; color: var(--muted); flex-wrap: wrap; }
+  .socials a:hover { color: var(--accent-2); }
+
+  .to-top {
+    position: fixed; right: 24px; bottom: 24px; z-index: 40;
+    width: 48px; height: 48px; border-radius: 14px; border: 0; cursor: pointer;
+    background: var(--grad); color: #fff; font-size: 20px;
+    box-shadow: 0 8px 30px rgba(124,92,255,.4);
+    opacity: 0; transform: translateY(16px); pointer-events: none;
+    transition: opacity .3s, transform .3s;
+  }
+  .to-top.show { opacity: 1; transform: none; pointer-events: auto; }
+  .to-top:hover { transform: translateY(-3px); }
+
+  footer { padding: 36px 0; text-align: center; color: var(--muted); font-size: 13px; border-top: 1px solid var(--border); }
+
+  /* Scroll reveal */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .8s ease, transform .8s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 960px) {
+    .skills, .more-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 860px) {
+    .about-grid, .projects, .timeline-wrap, .hero-grid { grid-template-columns: 1fr; }
+    .hero-grid { gap: 28px; }
+    .portrait { order: -1; justify-self: start; width: 140px; border-radius: 24px; }
+    .portrait img { border-radius: 21px; }
+    .portrait figcaption { display: none; }
+    .nav-links {
+      position: absolute; top: 64px; left: 0; right: 0; flex-direction: column; gap: 0;
+      background: rgba(7,8,13,.96); border-bottom: 1px solid var(--border); display: none;
+    }
+    .nav-links.open { display: flex; }
+    .nav-links a { padding: 14px 16px; border-top: 1px solid var(--border); }
+    .menu-btn { display: block; }
+    .focus { grid-template-columns: 1fr; gap: 10px; padding: 24px; }
+    section { padding: 80px 0; }
+  }
+  @media (max-width: 600px) {
+    .skills, .more-grid { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+<div class="bg-fx"><div class="blob a"></div><div class="blob b"></div></div>
+
+<nav>
+  <div class="container">
+    <a href="#top" class="logo">&lt;KirinFeng<span>/</span>&gt;</a>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container hero-grid">
+    <div>
+      <span class="tag"><i></i>Open to Security Analyst / AppSec roles</span>
+      <h1>Hi, I'm<br><span class="grad-text">Kirin Feng</span></h1>
+      <div class="typed" id="typed"></div>
+      <div class="hero-meta">M.S. Cybersecurity, NYIT · Vancouver, Canada</div>
+      <div class="hero-cta">
+        <a href="#projects" class="btn primary">View Projects →</a>
+        <a href="resume.pdf" class="btn ghost" target="_blank" rel="noopener">Download Résumé ↓</a>
+      </div>
+    </div>
+    <figure class="portrait">
+      <img src="img/icon-face.jpg" alt="Portrait of Kirin Feng" width="1000" height="1000">
+      <figcaption>kirin@sec:~$ whoami</figcaption>
+    </figure>
+  </div>
+</header>
+
+<section id="about">
+  <div class="container">
+    <div class="sec-head reveal"><div class="num">01 /</div><h2>About Me</h2></div>
+    <div class="about-grid">
+      <div class="reveal">
+        <p>I'm a cybersecurity graduate (<strong>M.S., New York Institute of Technology</strong>) with hands-on project experience in <strong>web application security, vulnerability assessment, STRIDE threat modeling, intrusion detection, and digital forensics</strong>.</p>
+        <p>I've conducted an authorized web application penetration test for an industry client partner, written and validated Suricata detection rules, and assessed security risks in multi-tenant SaaS architectures.</p>
+        <p>With a B.Tech in Information Technology and a background in web development and IT support, I bring both a builder's and a breaker's view of systems. I'm seeking entry-level <strong>Security Analyst, Application Security Analyst, or Junior Security Engineer</strong> opportunities.</p>
+        <dl class="facts">
+          <div><dt>Based in</dt><dd>Vancouver, Canada</dd></div>
+          <div><dt>Focus</dt><dd>Security Analysis · Application Security · Security Engineering</dd></div>
+          <div><dt>Languages</dt><dd>Chinese · English</dd></div>
+        </dl>
+      </div>
+      <div class="stats reveal">
+        <div class="stat"><b class="grad-text" data-count="25" data-suffix="+">0</b><span>Technical projects</span></div>
+        <div class="stat"><b class="grad-text" data-count="10" data-suffix="+">0</b><span>Years of hands-on IT</span></div>
+        <div class="stat"><b class="grad-text" data-count="23">0</b><span>Threats modeled in one STRIDE review</span></div>
+        <div class="stat"><b class="grad-text" data-count="76">0</b><span>Source files reconstructed in a pentest</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="container">
+    <div class="sec-head reveal"><div class="num">02 /</div><h2>Skills</h2></div>
+    <div class="skills">
+      <div class="skill-card reveal">
+        <div class="icon">🎯</div><h3>Pentesting &amp; AppSec</h3>
+        <div class="chips"><span class="chip">Burp Suite</span><span class="chip">OWASP ZAP</span><span class="chip">Nmap / NSE</span><span class="chip">Nessus</span><span class="chip">Metasploit</span><span class="chip">SQLMap</span><span class="chip">SQLi</span><span class="chip">XSS</span><span class="chip">IDOR / BOLA</span><span class="chip">SSRF</span><span class="chip">JWT Testing</span><span class="chip">API Security</span></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="icon">🛡️</div><h3>Detection &amp; Analysis</h3>
+        <div class="chips"><span class="chip">Suricata</span><span class="chip">Sysmon</span><span class="chip">Wireshark</span><span class="chip">MITRE ATT&amp;CK</span><span class="chip">PCAP Analysis</span><span class="chip">IDS Rules</span><span class="chip">Log Analysis</span><span class="chip">CVE Analysis</span><span class="chip">IoCs</span></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="icon">🧩</div><h3>Security Engineering &amp; GRC</h3>
+        <div class="chips"><span class="chip">STRIDE</span><span class="chip">Threat Dragon</span><span class="chip">DFDs</span><span class="chip">OWASP SAMM</span><span class="chip">BSIMM</span><span class="chip">Secure SDLC</span><span class="chip">Risk Assessment</span><span class="chip">Tenant Isolation</span><span class="chip">PIPEDA</span></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="icon">🔍</div><h3>Forensics &amp; Cryptography</h3>
+        <div class="chips"><span class="chip">Autopsy</span><span class="chip">FTK Imager</span><span class="chip">File Carving</span><span class="chip">E01 / DD</span><span class="chip">Hash Verification</span><span class="chip">OpenSSL</span><span class="chip">PKI / X.509</span><span class="chip">TLS</span><span class="chip">AES / RSA / ECC</span></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="icon">🖧</div><h3>Systems, IAM &amp; Networking</h3>
+        <div class="chips"><span class="chip">Linux</span><span class="chip">Kali</span><span class="chip">Windows Server</span><span class="chip">Active Directory</span><span class="chip">RBAC</span><span class="chip">Linux ACLs</span><span class="chip">TCP/IP</span><span class="chip">DNS / DHCP</span><span class="chip">Cisco</span><span class="chip">PowerShell</span></div>
+      </div>
+      <div class="skill-card reveal">
+        <div class="icon">⚙️</div><h3>Development &amp; Cloud</h3>
+        <div class="chips"><span class="chip">Python</span><span class="chip">JavaScript</span><span class="chip">Java</span><span class="chip">C++</span><span class="chip">SQL</span><span class="chip">Bash</span><span class="chip">React</span><span class="chip">Node.js</span><span class="chip">Solidity</span><span class="chip">GCP / Cloud Run</span><span class="chip">Docker</span><span class="chip">Git</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="container">
+    <div class="sec-head reveal">
+      <div class="num">03 /</div><h2>Featured Projects</h2>
+      <p>All offensive testing was performed in authorized engagements or isolated lab environments.</p>
+    </div>
+    <div class="filters reveal" id="filters">
+      <button class="filter active" data-filter="all">All</button>
+      <button class="filter" data-filter="appsec">Pentest &amp; AppSec</button>
+      <button class="filter" data-filter="detect">Detection &amp; Forensics</button>
+      <button class="filter" data-filter="eng">Security Engineering</button>
+      <button class="filter" data-filter="dev">Development</button>
+    </div>
+    <div class="projects" id="projectGrid"></div>
+
+    <h3 class="more-head reveal">More Engineering Projects</h3>
+    <div class="more-grid" id="moreGrid"></div>
+  </div>
+</section>
+
+<section id="experience">
+  <div class="container">
+    <div class="sec-head reveal"><div class="num">04 /</div><h2>Experience &amp; Education</h2></div>
+    <div class="timeline-wrap">
+      <div class="reveal">
+        <h3 class="col">// work</h3>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="time">2016 — Present</div>
+            <h4>Freelance IT Support &amp; Hardware Services</h4>
+            <div class="org">Self-Employed · Project-based</div>
+            <p>Remote troubleshooting of Windows, software, driver and configuration issues; custom PC builds, hardware sourcing and upgrade recommendations based on requirements and budget.</p>
+          </div>
+          <div class="tl-item">
+            <div class="time">Jan 2023 — Aug 2023</div>
+            <h4>Website Developer</h4>
+            <div class="org">New Field Education Group · Vancouver, BC</div>
+            <p>Built and maintained site functionality with HTML, CSS and JavaScript; translated stakeholder requirements into updates and improved usability and consistency across desktop and mobile.</p>
+          </div>
+          <div class="tl-item">
+            <div class="time">Jan 2021 — Aug 2021</div>
+            <h4>Business Development Advisor</h4>
+            <div class="org">Quantasphere Solution · Burnaby, BC</div>
+            <p>Organized requirements, evaluated opportunities and prepared recommendations; coordinated stakeholders to align technical and service activities with business objectives.</p>
+          </div>
+        </div>
+      </div>
+      <div class="reveal">
+        <h3 class="col">// education</h3>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="time">2024 — 2026</div>
+            <h4>M.S. Cybersecurity</h4>
+            <div class="org">New York Institute of Technology · Vancouver, BC</div>
+            <p>Software security, digital forensics, web application security, network security, blockchain, privacy, risk and security governance.</p>
+          </div>
+          <div class="tl-item">
+            <div class="time">2018 — 2024</div>
+            <h4>B.Tech Information Technology</h4>
+            <div class="org">Kwantlen Polytechnic University · Surrey, BC</div>
+            <p>Software development, web technologies, data mining, database management, systems analysis, UI/UX, networking and team-based delivery.</p>
+          </div>
+        </div>
+        <h3 class="col" style="margin-top:12px">// credentials &amp; recognition</h3>
+        <div class="cert"><div class="badge">CCNA</div><div><strong>Cisco Certified Network Associate: Routing &amp; Switching</strong><br><span>Cisco Networking Academy · May 2020</span></div></div>
+        <div class="cert"><div class="badge">TALK</div><div><strong>AI Bias in Hiring Systems</strong><br><span>Graduate research and presentation · 2026</span></div></div>
+      </div>
+    </div>
+    <div class="focus reveal">
+      <div class="focus-label">// current focus</div>
+      <p>Targeting <strong>Security Analyst, Application Security, and Junior Security Engineer</strong> roles while deepening threat-modeling, web-testing, and digital-forensics capabilities.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <div class="contact-box reveal">
+      <h2>Let's <span class="grad-text">secure</span> something together</h2>
+      <p>I'm looking for Security Analyst, Application Security, and Junior Security Engineer roles in Greater Vancouver or remote. My inbox is always open.</p>
+      <div class="hero-cta" style="justify-content:center;margin-top:0">
+        <a href="mailto:fengyuanqi@gmail.com" class="btn primary">fengyuanqi@gmail.com</a>
+        <a href="resume.pdf" class="btn ghost" target="_blank" rel="noopener">Download Résumé ↓</a>
+      </div>
+      <div class="socials">
+        <a href="tel:+17789668194">778-966-8194</a>
+        <a href="https://www.linkedin.com/in/kirin-feng/" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <a href="https://github.com/KirinFeng" target="_blank" rel="noopener">GitHub ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>© <span id="year"></span> Kirin Feng · Vancouver, Canada</footer>
+
+<button class="to-top" id="toTop" aria-label="Back to top" title="Back to top">↑</button>
+
+<script>
+  // Featured projects — edit here to add, remove or reorder
+  const CATS = {
+    appsec: { label: "Pentest & AppSec",       grad: "linear-gradient(135deg,#ff4d6d,#7c5cff)" },
+    detect: { label: "Detection & Forensics",  grad: "linear-gradient(135deg,#00b4d8,#2ee59d)" },
+    eng:    { label: "Security Engineering",   grad: "linear-gradient(135deg,#7c5cff,#00d4ff)" },
+    dev:    { label: "Development",            grad: "linear-gradient(135deg,#ffb84d,#ff5c8a)" },
+  };
+  const projects = [
+    { cat: "appsec", metric: "76 source files reconstructed",
+      title: "Authorized Web Application Penetration Test", ctx: "Graduate · Industry client partner",
+      desc: "External pentest of two web environments: built an asset and service baseline, mapped the attack surface, and validated findings across authentication, access control, exposed services, headers, uploads and dependencies. Recovered 76 client-side files from an exposed Webpack source map and delivered prioritized remediation.",
+      tags: ["Nmap", "Nessus", "Burp Suite", "DIRB", "JWT", "Python"] },
+    { cat: "eng", metric: "23 threats · 5 critical",
+      title: "STRIDE Threat Modeling of a Multi-Tenant SaaS", ctx: "Graduate team project",
+      desc: "Modeled an e-commerce SaaS (SPA, API gateway, auth/order/payment microservices, cloud storage, third-party integrations) in OWASP Threat Dragon. Identified 23 threats — including BOLA, cross-tenant access and forged payment webhooks — and designed risk-based mitigations.",
+      tags: ["STRIDE", "Threat Dragon", "DFD", "Kubernetes", "API Security"] },
+    { cat: "detect", metric: "T1190 · T1059.004 · T1071.001",
+      title: "CVE-2022-1388 Exploit & Detection Analysis", ctx: "Graduate · Intrusion detection",
+      desc: "Reproduced the F5 BIG-IP iControl REST auth-bypass and RCE in an isolated lab, correlated Wireshark traffic with server logs, mapped activity to MITRE ATT&CK, and built Suricata/Sysmon detection logic with mitigations.",
+      tags: ["Suricata", "Sysmon", "Wireshark", "MITRE ATT&CK"] },
+    { cat: "detect", metric: "Samba RCE → custom IDS rules",
+      title: "Network Recon, Exploitation & IDS Detection", ctx: "Graduate · Intrusion detection",
+      desc: "Enumerated a lab network with Nmap and NSE, reproduced a Samba RCE to a Meterpreter session with Metasploit, then configured Suricata and wrote validated signatures for malicious HTTP/XSS traffic in captured PCAPs.",
+      tags: ["Nmap", "Metasploit", "Suricata", "Wireshark", "PCAP"] },
+    { cat: "appsec", metric: "IDOR · Stored XSS · Blind SQLi",
+      title: "Web App Exploitation & Access Control Testing", ctx: "Graduate · Intrusion detection",
+      desc: "Deployed a deliberately vulnerable app in Docker and used Burp Suite to exploit IDOR, price manipulation, broken access control, stored XSS, account-recovery flaws and blind SQL injection via SQLMap.",
+      tags: ["Burp Suite", "Docker", "SQLMap", "Access Control"] },
+    { cat: "appsec", metric: "SQLi · SSRF · Path Traversal",
+      title: "Web Application Vulnerability Testing (WebGoat)", ctx: "Graduate · Secure software engineering",
+      desc: "Used OWASP ZAP on Kali to capture, modify and replay traffic — demonstrating SQL injection, upload path traversal, password-reset bypass, IDOR/BOLA, log injection and SSRF, with the CIA impact of each.",
+      tags: ["OWASP ZAP", "WebGoat", "Kali Linux", "HTTP Analysis"] },
+    { cat: "eng", metric: "OWASP SAMM + BSIMM",
+      title: "Software Security Maturity Assessment", ctx: "Graduate team project",
+      desc: "Assessed a simulated SaaS organization's security maturity, found gaps in governance, secure build, defect and incident management, mapped 7 components with trust boundaries, and produced a prioritized security roadmap.",
+      tags: ["OWASP SAMM", "BSIMM", "Cornucopia", "Secure SDLC"] },
+    { cat: "appsec", metric: "ACL · SUID · Buffer Overflow",
+      title: "Linux OS Security & Exploitation Lab", ctx: "Graduate academic project",
+      desc: "Configured fine-grained Linux ACLs, analyzed SUID privilege-escalation risk with strace and PATH behaviour, and investigated a strcpy() stack overflow in a privileged C program with GDB.",
+      tags: ["Linux", "GDB", "strace", "GCC", "Privilege Escalation"] },
+    { cat: "eng", metric: "Private CA → HTTPS",
+      title: "Public Key Infrastructure & HTTPS Lab", ctx: "Graduate · Cryptography",
+      desc: "Built a private CA with OpenSSL, issued X.509 server certificates from CSRs, deployed HTTPS on Apache, and tested validation failures and MITM scenarios with untrusted and compromised CAs.",
+      tags: ["OpenSSL", "PKI", "X.509", "TLS", "Apache"] },
+    { cat: "detect", metric: "JPEG · PNG · PDF recovered",
+      title: "Python File Carving Tool", ctx: "Graduate · Digital forensics",
+      desc: "Wrote a signature-based carver that scans raw binaries and .dd images to recover files without filesystem metadata, with offset-based naming and MD5/SHA-256 validation against originals.",
+      tags: ["Python", "File Signatures", "FTK Imager", "Hashing"] },
+    { cat: "detect", metric: "Windows E01 investigation",
+      title: "Digital Forensics Investigation with Autopsy", ctx: "Graduate academic project",
+      desc: "Verified image integrity, examined user accounts, browser history, filesystem records and user files to reconstruct activity, and produced a structured forensic report.",
+      tags: ["Autopsy", "E01", "Windows Forensics", "Reporting"] },
+    { cat: "dev", metric: "Solidity on Sepolia",
+      title: "Ethereum Marketplace DApp", ctx: "Graduate · Blockchain development",
+      desc: "Deployed a marketplace smart contract with listing, purchase and cancellation lifecycles and ownership/value validation, plus a MetaMask-connected frontend using direct JSON-RPC calls.",
+      tags: ["Solidity", "MetaMask", "Remix", "Web3", "JavaScript"] },
+    { cat: "dev", metric: "Localhost-only · allowlisted",
+      title: "Personal Finance Dashboard & Secure Chrome Launcher", ctx: "Independent full-stack project",
+      desc: "Private dashboard with OFX statement parsing, FITID de-duplication and versioned JSON backups, launched by a Manifest V3 extension via a restricted Python Native Messaging host.",
+      tags: ["JavaScript", "Python", "Chrome MV3", "OFX"] },
+    { cat: "dev", metric: "ADK · Gemini · RAG",
+      title: "Agentic AI Workflow on Google Cloud", ctx: "Google Codelab",
+      desc: "Built a multi-stage, human-in-the-loop agent with Google ADK, integrated Gemini with Memory Bank and RAG, and deployed it to Cloud Run through Cloud Build.",
+      tags: ["Python", "GCP", "Cloud Run", "Gemini"] },
+  ];
+  const more = [
+    { title: "Windows Server & Active Directory", desc: "Multi-server domain with AD DS, DNS, DHCP, IIS; 37 users and RBAC for departmental shares.", stack: "Windows Server · AD · RBAC" },
+    { title: "PIPEDA Privacy & Security Case Analysis", desc: "Analyzed Canadian privacy cases on consent, hashed identifiers and accountability.", stack: "PIPEDA · Privacy · Governance" },
+    { title: "Wireless Site Survey & Design", desc: "Surveyed a multi-floor campus and designed coverage with ~142 dual-band APs.", stack: "NetSpot · 2.4/5 GHz · RF" },
+    { title: "Discord Fishing Game Bot", desc: "Slash-command game with MongoDB persistence, deployed on an Azure VM with PM2.", stack: "Node.js · Discord.js · MongoDB" },
+    { title: "Raspberry Pi Surveillance Robot", desc: "PiCar-X robot with face tracking, live video and remote patrol control.", stack: "Python · Raspberry Pi · CV" },
+    { title: "Facial Recognition System", desc: "Live face identification with OpenCV compiled from source for ARM.", stack: "Python · OpenCV · Pi Camera" },
+    { title: "Weather App & UI/UX Study", desc: "Two prototypes on OpenWeatherMap; usability study scored 91.56 vs 72.89.", stack: "JavaScript · SPSS · UX" },
+    { title: "Interactive Map Web App", desc: "React front end with Node.js and external location-service APIs.", stack: "React · Node.js · REST" },
+    { title: "The War of Spacecraft", desc: "2D multiplayer shooter designed with UML and a finite state machine.", stack: "Java · Processing · OOP" },
+    { title: "IT Project Planning & Management", desc: "WBS, schedule, critical path, budget and risk register for a software project.", stack: "MS Project · WBS · Risk" },
+    { title: "Smart Health System", desc: "Requirements-driven UI design, feature implementation and testing.", stack: "Front-end · UI · Testing" },
+    { title: "Bookstore System", desc: "Multi-platform UI components and database-backed workflows.", stack: "App Dev · DB Design" },
+  ];
+
+  const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  document.getElementById("projectGrid").innerHTML = projects.map(p => `
+    <article class="project reveal" data-cat="${p.cat}">
+      <div class="banner" style="background:${CATS[p.cat].grad}">
+        <div class="cat">${esc(CATS[p.cat].label)}</div>
+        <div class="metric">${esc(p.metric)}</div>
+      </div>
+      <div class="project-body">
+        <div class="ctx">${esc(p.ctx)}</div>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.desc)}</p>
+        <div class="chips">${p.tags.map(t => `<span class="chip">${esc(t)}</span>`).join("")}</div>
+      </div>
+    </article>`).join("");
+  document.getElementById("moreGrid").innerHTML = more.map(m => `
+    <div class="mini reveal"><h4>${esc(m.title)}</h4><p>${esc(m.desc)}</p><div class="stack">${esc(m.stack)}</div></div>`).join("");
+
+  // Typing effect
+  const roles = ["Security Analyst", "Application Security", "Penetration Testing", "Threat Modeling", "Digital Forensics"];
+  const typedEl = document.getElementById("typed");
+  let r = 0, c = 0, deleting = false;
+  (function type() {
+    const word = roles[r];
+    typedEl.textContent = word.slice(0, c);
+    if (!deleting && c === word.length) { deleting = true; return setTimeout(type, 1600); }
+    if (deleting && c === 0) { deleting = false; r = (r + 1) % roles.length; }
+    c += deleting ? -1 : 1;
+    setTimeout(type, deleting ? 50 : 100);
+  })();
+
+  // Scroll reveal + counters
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in");
+      e.target.querySelectorAll("[data-count]").forEach(el => {
+        const target = +el.dataset.count, suffix = el.dataset.suffix || "", start = performance.now();
+        const step = now => {
+          const t = Math.min((now - start) / 1200, 1);
+          el.textContent = Math.round(target * (1 - Math.pow(1 - t, 3))) + suffix;
+          if (t < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
+      });
+      io.unobserve(e.target);
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+  // Project filter
+  document.querySelectorAll(".filter").forEach(btn => btn.addEventListener("click", () => {
+    document.querySelectorAll(".filter").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    const f = btn.dataset.filter;
+    document.querySelectorAll(".project").forEach(p =>
+      p.classList.toggle("hide", f !== "all" && p.dataset.cat !== f));
+  }));
+
+  // In-page links: scroll via JS so they also work when the page is opened from file:// or data: URLs
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => {
+    const target = document.querySelector(a.getAttribute("href"));
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: "smooth" });
+  }));
+
+  // Wheel paging: a section that fits the viewport jumps straight to the next/previous one;
+  // a section taller than the viewport (e.g. Projects) scrolls normally until its edge is reached.
+  const panels = [...document.querySelectorAll("header.hero, section")];
+  let animating = false, lockUntil = 0;
+  const easeInOut = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  function animateTo(target) {
+    const start = scrollY, dist = target - start, t0 = performance.now(), dur = 750;
+    animating = true;
+    (function frame(now) {
+      const t = Math.min((now - t0) / dur, 1);
+      scrollTo({ top: start + dist * easeInOut(t), behavior: "instant" });
+      if (t < 1) requestAnimationFrame(frame);
+      else { animating = false; lockUntil = performance.now() + 250; }
+    })(t0);
+  }
+  addEventListener("wheel", e => {
+    if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+    const now = performance.now();
+    if (animating || now < lockUntil) {
+      e.preventDefault();
+      if (!animating) lockUntil = now + 120; // swallow trackpad inertia after a jump
+      return;
+    }
+    const y = scrollY, vh = innerHeight, tol = 4;
+    const maxY = document.documentElement.scrollHeight - vh;
+    const box = el => ({ top: el.offsetTop, bottom: el.offsetTop + el.offsetHeight, tall: el.offsetHeight > vh + tol });
+    let i = 0;
+    panels.forEach((p, k) => { if (p.offsetTop <= y + tol) i = k; });
+    const cur = box(panels[i]);
+    const step = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? vh : 1);
+    // Inside a tall section: scroll natively, but stop at its edge instead of spilling into the neighbour
+    const within = edge => {
+      if (step > 0 ? y + step > edge : y + step < edge) {
+        e.preventDefault();
+        scrollTo({ top: edge, behavior: "smooth" });
+      }
+    };
+    let target;
+    if (e.deltaY > 0) {
+      if (cur.tall && y < cur.bottom - vh - tol) return within(cur.bottom - vh); // still content below
+      target = i + 1 < panels.length ? panels[i + 1].offsetTop : maxY;
+    } else {
+      if (y > cur.top + tol) {
+        if (cur.tall && y <= cur.bottom - vh + tol) return within(cur.top); // still content above
+        target = cur.tall ? cur.bottom - vh : cur.top;
+      } else {
+        if (i === 0) return;
+        const prev = box(panels[i - 1]);
+        target = prev.tall ? prev.bottom - vh : prev.top;
+      }
+    }
+    target = Math.max(0, Math.min(target, maxY));
+    if (Math.abs(target - y) <= tol) return;
+    e.preventDefault();
+    animateTo(target);
+  }, { passive: false });
+
+  // Back to top: show once the hero is scrolled past
+  const toTop = document.getElementById("toTop");
+  const toggleToTop = () => toTop.classList.toggle("show", scrollY > innerHeight * 0.6);
+  addEventListener("scroll", toggleToTop, { passive: true });
+  toggleToTop();
+  toTop.addEventListener("click", () => scrollTo({ top: 0, behavior: "smooth" }));
+
+  // Mobile menu
+  const navLinks = document.getElementById("navLinks");
+  document.getElementById("menuBtn").addEventListener("click", () => navLinks.classList.toggle("open"));
+  navLinks.querySelectorAll("a").forEach(a => a.addEventListener("click", () => navLinks.classList.remove("open")));
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
